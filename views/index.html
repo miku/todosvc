@@ -1,0 +1,20 @@
+<html>
+<head>
+<style>
+li.done { text-decoration: line-through; }
+</style>
+</head>
+<body>
+<h1>TODO</h1>
+<a href="/new">New</a>
+<ul>
+    {{range .}}
+        {{if .Done}}
+        <li class="done">{{.Title}} </li>
+        {{else}}
+            <li>{{.Title}} (<a href="/done/{{ .Id }}">mark done</a>)</li>
+        {{end}}
+    {{end}}
+</ul>
+</body>
+</html>
