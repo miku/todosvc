@@ -1,3 +1,5 @@
+github.com/DATA-DOG/go-sqlmock v1.5.0 h1:Shsta01QNfFxHCfpW6YH2STWB0MudeXXEWMr20OEh60=
+github.com/DATA-DOG/go-sqlmock v1.5.0/go.mod h1:f/Ixk793poVmq4qj/V1dPUg2JEAKC73Q5eFN3EC/SaM=
 github.com/glacjay/goini v0.0.0-20161120062552-fd3024d87ee2 h1:+SEORW3KptcFnlhTbn7N0drG3AFnrcmBDWDyQ3Bt06o=
 github.com/glacjay/goini v0.0.0-20161120062552-fd3024d87ee2/go.mod h1:1vW2LGZb8uLSqmYBOdxvhiwATuLtmyUTMezM3cHrIHQ=
 github.com/go-sql-driver/mysql v1.5.0 h1:ozyZYNQW3x3HtqT1jira07DN2PArx2v7/mN66gGcHOs=
