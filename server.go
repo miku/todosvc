@@ -71,18 +71,12 @@ func (s *Server) handleDone() http.HandlerFunc {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
-		log.Println(todo)
 		stmt := `update todo set done = 1 where id = ?`
 		if _, err := s.DB.Exec(stmt, vars["id"]); err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
 		http.Redirect(w, r, "/", 302)
-	}
-}
-
-func (s *Server) handleDelete() http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
 	}
 }
 

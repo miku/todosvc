@@ -1,9 +1,7 @@
 package todosvc
 
 import (
-	"io"
 	"net/http/httptest"
-	"os"
 	"testing"
 
 	"github.com/DATA-DOG/go-sqlmock"
@@ -22,11 +20,12 @@ func TestHandleIndex(t *testing.T) {
 		Router: mux.NewRouter(),
 	}
 	srv.Routes()
+
+	mock.ExpectQuery("SELECT (.+) FROM todo")
+
 	req := httptest.NewRequest("GET", "/", nil)
 	w := httptest.NewRecorder()
-	mock.ExpectQuery("SELECT (.+) FROM todo")
 	srv.ServeHTTP(w, req)
-	io.Copy(os.Stdout, w.Body)
 	if err := mock.ExpectationsWereMet(); err != nil {
 		t.Errorf("there were unfulfilled expectations: %s", err)
 	}
