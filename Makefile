@@ -8,5 +8,4 @@ all: $(TARGETS)
 
 .PHONY: clean
 clean:
-	rm -f geomimg
-
+	rm -f $(TARGETS)
