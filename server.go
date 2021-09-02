@@ -1,6 +1,8 @@
 package todosvc
 
 import (
+	"encoding/json"
+	"errors"
 	"html/template"
 	"log"
 	"net/http"
@@ -10,12 +12,22 @@ import (
 	"github.com/jmoiron/sqlx"
 )
 
+var ErrInvalid = errors.New("invalid")
+
 // Todo item.
 type Todo struct {
 	Id      int
 	Title   string
 	Done    bool
 	Created time.Time
+}
+
+func (t *Todo) Finish() error {
+	if time.Now().After(time.Now().Add(-240 * time.Hour)) {
+		t.Done = true
+		return nil
+	}
+	return ErrInvalid
 }
 
 type Server struct {
@@ -36,6 +48,25 @@ func (s *Server) handleIndex() http.HandlerFunc {
 		}
 		tmpl := template.Must(template.ParseFiles("./views/index.html"))
 		tmpl.Execute(w, todos)
+	}
+}
+
+func (s *Server) handleListing() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		var todos []Todo
+		err := s.DB.Select(&todos, "SELECT * FROM todo")
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		for _, v := range todos {
+			log.Printf("%v", v)
+		}
+		enc := json.NewEncoder(w)
+		if err := enc.Encode(todos); err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
 	}
 }
 
@@ -71,6 +102,12 @@ func (s *Server) handleDone() http.HandlerFunc {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
+		err = todo.Finish()
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
+		}
+		// addition business logic, e.g. todo only if older then 10 days
 		stmt := `update todo set done = 1 where id = ?`
 		if _, err := s.DB.Exec(stmt, vars["id"]); err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
