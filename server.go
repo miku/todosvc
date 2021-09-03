@@ -1,6 +1,7 @@
 package todosvc
 
 import (
+	"embed"
 	"encoding/json"
 	"errors"
 	"html/template"
@@ -11,6 +12,9 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/jmoiron/sqlx"
 )
+
+//go:embed views/*
+var views embed.FS
 
 var ErrInvalid = errors.New("invalid")
 
@@ -46,7 +50,7 @@ func (s *Server) handleIndex() http.HandlerFunc {
 		for _, v := range todos {
 			log.Printf("%v", v)
 		}
-		tmpl := template.Must(template.ParseFiles("./views/index.html"))
+		tmpl := mustTemplate("views/index.html")
 		tmpl.Execute(w, todos)
 	}
 }
@@ -73,7 +77,7 @@ func (s *Server) handleListing() http.HandlerFunc {
 func (s *Server) handleNew() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		if r.Method == http.MethodGet {
-			tmpl := template.Must(template.ParseFiles("./views/new.html"))
+			tmpl := mustTemplate("views/new.html")
 			tmpl.Execute(w, nil)
 			return
 		}
@@ -119,4 +123,12 @@ func (s *Server) handleDone() http.HandlerFunc {
 
 func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	s.Router.ServeHTTP(w, r)
+}
+
+func mustTemplate(path string) *template.Template {
+	b, err := views.ReadFile(path)
+	if err != nil {
+		panic(err)
+	}
+	return template.Must(template.New("t").Parse(string(b)))
 }
