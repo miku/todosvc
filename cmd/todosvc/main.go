@@ -4,6 +4,7 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/gorilla/csrf"
 	"github.com/gorilla/mux"
 	"github.com/jmoiron/sqlx"
 	"github.com/kelseyhightower/envconfig"
@@ -31,6 +32,7 @@ func main() {
 		Router: mux.NewRouter(),
 	}
 	svr.Routes()
+	h := csrf.Protect([]byte("abcdabcdabcdabcdabcdabcdabcdabcd"))(svr)
 	log.Printf("starting service at http://%v", config.HostPort)
-	log.Fatal(http.ListenAndServe(config.HostPort, svr))
+	log.Fatal(http.ListenAndServe(config.HostPort, h))
 }

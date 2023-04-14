@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/gorilla/csrf"
 	"github.com/gorilla/mux"
 	"github.com/jmoiron/sqlx"
 )
@@ -78,7 +79,7 @@ func (s *Server) handleNew() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		if r.Method == http.MethodGet {
 			tmpl := mustTemplate("views/new.html")
-			tmpl.Execute(w, nil)
+			tmpl.Execute(w, map[string]interface{}{csrf.TemplateTag: csrf.TemplateField(r)})
 			return
 		}
 		if r.Method == http.MethodPost {

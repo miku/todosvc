@@ -1,6 +1,7 @@
 <h1>Add Todo</h1>
 
 <form action="/new" method="POST">
+{{ .csrfField }}
 <div>Title <input type="title" name="title"></div>
 <div><input type="submit" value="Add"></div>
 </form>
