@@ -11,4 +11,4 @@ $ ./todosvc
 
 Go to [http://localhost:3000](http://localhost:3000).
 
-![](static/cast.webm)
+![](static/cast.gif)
